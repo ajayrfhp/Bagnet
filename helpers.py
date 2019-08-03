@@ -15,7 +15,7 @@ def fit(model, train_loader, metric, optimizer, model_name, epochs = 5, log_ever
         losses = []
         for i, (inputs, outputs) in enumerate(train_loader):
             optimizer.zero_grad()
-            predictions = model(inputs)
+            predictions, _ = model(inputs)
             loss = metric(predictions, outputs)  
             correct += sum(torch.max(predictions, -1)[1] == outputs).item()
             total += predictions.shape[0]
@@ -33,7 +33,7 @@ def evaluate(model, test_loader):
     model.eval()
     for i, data in enumerate(test_loader):
         inputs, outputs = data
-        predictions = model(inputs)
+        predictions, _ = model(inputs)
         predictions = torch.max(predictions, -1)[1]
         correct += sum(predictions == outputs).item()
         total += predictions.shape[0]
