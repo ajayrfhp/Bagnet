@@ -7,10 +7,13 @@ import torch.optim as optim
 from torchsummary import summary
 import torch.utils.data
 from torchvision import datasets, transforms
-from helpers import visualize_dataset, fit, evaluate, get_data, load_model
+from helpers import visualize_dataset, fit, evaluate, load_model
+import fashion_mnist_dataset
+import dogs_cats_dataset
 from models import SimpleModel, ExplainModel
 import sys
 import argparse
+import scipy.ndimage
 
 def visualize(train_loader, test_loader):
     visualize_dataset(train_loader)
@@ -36,18 +39,17 @@ def load_visualize_heatmap(model_path, test_loader):
         inputs, outputs = next(iter(test_loader))
         predictions, features = model(inputs)
         class_heatmap = model.explain.weight.data[predictions.argmax()][0]
+        f, ax = plt.subplots(2, 2)
         features = features[0, 0]
+
+        ax[0, 0].imshow(scipy.ndimage.zoom(features.detach().numpy(), 4, order = 1), cmap = 'gray')
         class_heatmap = (class_heatmap * features).detach().numpy()
-        plt.figure(figsize=(3, 3))
-        plt.imshow(inputs[0][0], cmap = 'gray')
+        ax[0, 1].imshow(inputs[0][0].detach().numpy(), cmap = 'gray')
+        ax[1, 0].imshow(scipy.ndimage.zoom(class_heatmap, 4, order = 1), cmap = 'gray')
+        print(label_map[outputs.item()], label_map[predictions.argmax().item()])
         plt.show()
-        plt.figure(figsize=(3, 3))
-        plt.imshow(class_heatmap, cmap = 'gray')
-        plt.show()
-        print(label_map[predictions.argmax().item()])
         break
     pass
-
 
 def main():
     parser = argparse.ArgumentParser()
@@ -60,7 +62,7 @@ def main():
 
 
     args = parser.parse_args()
-    train_loader, test_loader = get_data()
+    train_loader, test_loader = get_fashion_mnist_data()
     model = None
 
     if args.model:

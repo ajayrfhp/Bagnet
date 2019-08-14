@@ -54,15 +54,6 @@ def visualize_dataset(data_loader, num = 1):
         plt.show()
         print(label_map[outputs[0].item()])
 
-def get_data():
-    transform = transforms.Compose([
-        transforms.ToTensor()
-    ])
-    train_loader = torch.utils.data.DataLoader(datasets.FashionMNIST('../data', train=True, download=True, transform = transform),
-            batch_size=1, shuffle=True)
-    test_loader = torch.utils.data.DataLoader(datasets.FashionMNIST('../data', train=False, download=True, transform = transform),
-            batch_size=1, shuffle=True)
-    return train_loader, test_loader
 
 def save_model(model, model_name):
     torch.save(model, './models/' + model_name)
