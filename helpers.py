@@ -26,7 +26,6 @@ def fit(model, train_loader, metric, optimizer, model_name, epochs = 5, log_ever
                 save_model(model, model_name + '_epoch_' + str(j) + '_batch_' + str(i))
                 print(i, j, np.mean(losses), correct/total)
                 
-
 def evaluate(model, test_loader):
     correct = 0
     total = 0
@@ -40,20 +39,6 @@ def evaluate(model, test_loader):
         if i%1000 == 0:
             print(i)
     print('test accuracy', correct / total)
-
-
-def visualize_dataset(data_loader, num = 1):
-    label_map = { 0: 'T-shirt/top', 1:'Trouser', 2 : 'Pullover',
-                3: 'Dress', 4 : 'Coat', 5 : 'Sandal',
-                6 : 'Shirt', 7 : 'Sneaker', 8: 'Bag',
-                9 : 'Ankle boot'}
-    for _ in range(num):
-        inputs, outputs = next(iter(data_loader))
-        plt.figure(figsize=(3,3))
-        plt.imshow(inputs[0][0], cmap = 'gray')
-        plt.show()
-        print(label_map[outputs[0].item()])
-
 
 def save_model(model, model_name):
     torch.save(model, './models/' + model_name)
